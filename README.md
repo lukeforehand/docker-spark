@@ -6,12 +6,12 @@ The base Hadoop Docker image is also available as an official [Docker image](htt
 
 ##Pull the image from Docker Repository
 ```
-docker pull sequenceiq/spark:1.4.0
+docker pull lukeforehand/spark:1.4.0
 ```
 
 ## Building the image
 ```
-docker build --rm -t sequenceiq/spark:1.4.0 .
+docker build --rm -t lukeforehand/spark:1.4.0 .
 ```
 
 ## Running the image
@@ -20,11 +20,11 @@ docker build --rm -t sequenceiq/spark:1.4.0 .
 * in your /etc/hosts file add $(boot2docker ip) as host 'sandbox' to make it easier to access your sandbox UI
 * open yarn UI ports when running container
 ```
-docker run -it -p 8088:8088 -p 8042:8042 -h sandbox sequenceiq/spark:1.4.0 bash
+docker run -it -p 8088:8088 -p 8042:8042 -p 8000:8000 -h sandbox lukeforehand/spark:1.4.0 bash
 ```
 or
 ```
-docker run -d -h sandbox sequenceiq/spark:1.3.1 -d
+docker run -d -h sandbox lukeforehand/spark:1.4.0 -d
 ```
 
 ## Versions
@@ -55,11 +55,12 @@ scala> sc.parallelize(1 to 1000).count()
 
 In yarn-cluster mode, the Spark driver runs inside an application master process which is managed by YARN on the cluster, and the client can go away after initiating the application.
 
+note you must specify --files argument in cluster mode to enable metrics
+
 Estimating Pi (yarn-cluster mode):
 
 ```
 # execute the the following command which should write the "Pi is roughly 3.1418" into the logs
-# note you must specify --files argument in cluster mode to enable metrics
 spark-submit \
 --class org.apache.spark.examples.SparkPi \
 --files $SPARK_HOME/conf/metrics.properties \
@@ -76,6 +77,7 @@ Estimating Pi (yarn-client mode):
 # execute the the following command which should print the "Pi is roughly 3.1418" to the screen
 spark-submit \
 --class org.apache.spark.examples.SparkPi \
+--files $SPARK_HOME/conf/metrics.properties \
 --master yarn-client \
 --driver-memory 1g \
 --executor-memory 1g \
