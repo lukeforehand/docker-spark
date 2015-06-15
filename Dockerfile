@@ -12,6 +12,19 @@ RUN $BOOTSTRAP && $HADOOP_PREFIX/bin/hadoop dfsadmin -safemode leave && $HADOOP_
 
 ENV YARN_CONF_DIR $HADOOP_PREFIX/etc/hadoop
 ENV PATH $PATH:$SPARK_HOME/bin:$HADOOP_PREFIX/bin
+
+# graphite install
+RUN yum install -y epel-release
+RUN yum install -y python-pip python-devel pycairo
+RUN pip install https://github.com/graphite-project/ceres/tarball/master
+RUN pip install whisper
+RUN pip install carbon
+RUN pip install graphite-web
+RUN pip install django==1.4.5
+RUN pip install django-tagging
+
+RUN pip install gunicorn
+
 # update boot script
 COPY bootstrap.sh /etc/bootstrap.sh
 RUN chown root.root /etc/bootstrap.sh
